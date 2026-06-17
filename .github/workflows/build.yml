@@ -1,0 +1,24 @@
+name: Build RTL8188FU for S22
+on: workflow_dispatch
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install tools
+        run: sudo apt update && sudo apt install -y gcc-aarch64-linux-gnu make git bc libelf-dev libssl-dev
+      - name: Clone kernel source
+        run: git clone --depth 1 https://github.com/bruhduded/android_kernel_samsung_r0q -b 13 kernel
+      - name: Prepare kernel
+        run: |
+          cd kernel
+          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- r0q_defconfig
+          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- modules_prepare -j$(nproc)
+      - name: Build driver
+        run: |
+          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- KSRC=$GITHUB_WORKSPACE/kernel -j$(nproc)
+      - name: Upload
+        uses: actions/upload-artifact@v3
+        with:
+          name: rtl8188fu_S22
+          path: rtl8188fu.ko
