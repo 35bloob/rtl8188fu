@@ -18,7 +18,7 @@ jobs:
         run: |
           make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- KSRC=$GITHUB_WORKSPACE/kernel -j$(nproc)
       - name: Upload
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: rtl8188fu_S22
           path: rtl8188fu.ko
