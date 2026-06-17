@@ -6,11 +6,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install tools
-        run: sudo apt update && sudo apt install -y gcc-aarch64-linux-gnu make git bc libelf-dev libssl-dev wget
-      - name: Get Samsung kernel headers
+        run: sudo apt update && sudo apt install -y gcc-aarch64-linux-gnu make git bc libelf-dev libssl-dev
+      - name: Clone kernel source
         run: |
-          wget -q https://opensource.samsung.com/uploadSearch?searchValue=SM-S901B -O osrc.html || true
-          git clone --depth 1 https://github.com/LineageOS/android_kernel_samsung_sm8450 -b lineage-20 kernel
+          git clone --depth 1 https://x-access-token:${{ github.token }}@github.com/LineageOS/android_kernel_samsung_sm8450 -b lineage-20 kernel
       - name: Prepare kernel
         run: |
           cd kernel
