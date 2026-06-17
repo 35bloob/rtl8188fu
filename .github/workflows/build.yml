@@ -6,17 +6,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install tools
-        run: sudo apt update && sudo apt install -y gcc-aarch64-linux-gnu make git bc libelf-dev libssl-dev
-      - name: Clone kernel source
-        run: git clone --depth 1 https://github.com/aosp-mirror/kernel_common -b android12-5.10 kernel
+        run: sudo apt update && sudo apt install -y gcc-aarch64-linux-gnu make git bc libelf-dev libssl-dev wget
+      - name: Get Samsung kernel headers
+        run: |
+          wget -q https://opensource.samsung.com/uploadSearch?searchValue=SM-S901B -O osrc.html || true
+          git clone --depth 1 https://github.com/LineageOS/android_kernel_samsung_sm8450 -b lineage-20 kernel
       - name: Prepare kernel
         run: |
           cd kernel
-          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- defconfig
+          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- gki_defconfig
           make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- modules_prepare -j$(nproc)
       - name: Build driver
         run: |
-          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- KSRC=$GITHUB_WORKSPACE/kernel EXTRA_CFLAGS="-Wno-error -I$GITHUB_WORKSPACE/include" -j$(nproc)
+          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- KSRC=$GITHUB_WORKSPACE/kernel EXTRA_CFLAGS="-Wno-error" -j$(nproc)
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
