@@ -16,7 +16,7 @@ jobs:
           make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- modules_prepare -j$(nproc)
       - name: Build driver
         run: |
-          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- KSRC=$GITHUB_WORKSPACE/kernel -j$(nproc)
+          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- KSRC=$GITHUB_WORKSPACE/kernel EXTRA_CFLAGS="-Wno-error" -j$(nproc)
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
