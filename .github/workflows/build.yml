@@ -4,15 +4,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install tools
         run: sudo apt update && sudo apt install -y gcc-aarch64-linux-gnu make git bc libelf-dev libssl-dev
       - name: Clone kernel source
-        run: git clone --depth 1 https://github.com/bruhduded/android_kernel_samsung_r0q -b 13 kernel
+        run: git clone --depth 1 https://github.com/aosp-mirror/kernel_common -b android12-5.10 kernel
       - name: Prepare kernel
         run: |
           cd kernel
-          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- r0q_defconfig
+          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- defconfig
           make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- modules_prepare -j$(nproc)
       - name: Build driver
         run: |
